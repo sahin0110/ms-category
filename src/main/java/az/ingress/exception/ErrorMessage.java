@@ -6,8 +6,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorMessage {
-
-    UNEXPECTED_ERROR("Unexpected error occurred");
+    ALREADY_EXISTS("Already exists"),
+    UNEXPECTED_ERROR("Unexpected error occurred"),
+    CATEGORY_NOT_FOUND("Category not found");
 
     private final String message;
 }

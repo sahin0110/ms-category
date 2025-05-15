@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import static az.ingress.exception.ErrorMessage.UNEXPECTED_ERROR;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.METHOD_NOT_ALLOWED;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.ALREADY_REPORTED;
 
 @Slf4j
 @RestControllerAdvice
@@ -25,6 +27,20 @@ public class ErrorHandler {
     @ResponseStatus(METHOD_NOT_ALLOWED)
     public ErrorResponse handle(HttpRequestMethodNotSupportedException ex) {
         log.error("HttpRequestMethodNotSupportedException: ", ex);
+        return new ErrorResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(NOT_FOUND)
+    public ErrorResponse handle(NotFoundException ex) {
+        log.error("NotFoundException: ", ex);
+        return new ErrorResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler(AlreadyExistsException.class)
+    @ResponseStatus(ALREADY_REPORTED)
+    public ErrorResponse handle(AlreadyExistsException ex) {
+        log.error("AlreadyExistsException: ", ex);
         return new ErrorResponse(ex.getMessage());
     }
 }
