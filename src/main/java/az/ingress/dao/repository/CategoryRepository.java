@@ -1,15 +1,18 @@
 package az.ingress.dao.repository;
 
 import az.ingress.dao.entity.CategoryEntity;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
+import az.ingress.model.enums.Status;
 import org.springframework.data.repository.CrudRepository;
 
-public interface CategoryRepository extends CrudRepository<CategoryEntity, Long>, JpaRepository<CategoryEntity, Long> {
-    Page<CategoryEntity> findAllByParentId(Long parentId, Pageable pageable);
+import java.util.List;
+import java.util.Optional;
 
-    boolean existsByName(String name);
+public interface CategoryRepository extends CrudRepository<CategoryEntity, Long> {
+    List<CategoryEntity> findAllByStatus(Status status);
 
-    void deleteSubCategoriesByParent(CategoryEntity parent);
+    List<CategoryEntity> findAllSubCategoriesByParentAndStatus(CategoryEntity parent, Status status);
+
+    Optional<CategoryEntity> findByName(String categoryName);
+
+    List<CategoryEntity> findAllSubCategoriesByParent(CategoryEntity parent);
 }

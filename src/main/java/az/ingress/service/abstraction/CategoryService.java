@@ -1,26 +1,19 @@
 package az.ingress.service.abstraction;
 
-import az.ingress.model.criteria.PageCriteria;
 import az.ingress.model.request.CreateParentCategory;
-import az.ingress.model.request.CreateSubCategoryRequest;
 import az.ingress.model.request.UpdateCategoryRequest;
 import az.ingress.model.response.CategoryResponse;
-import az.ingress.model.response.PageableResponse;
 
 import javax.validation.Valid;
+import java.util.List;
 
 public interface CategoryService {
-    void createSubCategory(@Valid CreateSubCategoryRequest request);
 
-    PageableResponse<CategoryResponse> getAllSubCategories(PageCriteria pageCriteria, Long parentId);
+    List<CategoryResponse> getAllCategories();
 
-    PageableResponse<CategoryResponse> getAllCategories(PageCriteria pageCriteria);
+    void updateCategory(Long userId, @Valid UpdateCategoryRequest categoryRequest, Long categoryId);
 
-    CategoryResponse getCategoryById(Long categoryId);
+    void deleteCategory(Long userId, Long categoryId);
 
-    CategoryResponse updateCategory(@Valid UpdateCategoryRequest categoryRequest, Long categoryId);
-
-    void deleteCategory(Long categoryId);
-
-    void createParentCategory(@Valid CreateParentCategory createCategory);
+    void createCategory(Long userId, @Valid CreateParentCategory createCategory);
 }

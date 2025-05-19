@@ -1,12 +1,23 @@
 package az.ingress.dao.entity;
 
-import lombok.*;
+import az.ingress.model.enums.Status;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,14 +40,18 @@ public class CategoryEntity {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    private Long userId;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     private String name;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "parent_id")
     private CategoryEntity parent;
 
     @OneToMany(mappedBy = "parent", cascade = {PERSIST, MERGE})
-    private List<CategoryEntity> children = new ArrayList<>();
+    private List<CategoryEntity> subCategories;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

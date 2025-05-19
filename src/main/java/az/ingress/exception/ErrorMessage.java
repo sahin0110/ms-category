@@ -6,9 +6,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorMessage {
-    ALREADY_EXISTS("Already exists"),
+    CATEGORY_ALREADY_EXISTS("Category already exists with id: %s"),
     UNEXPECTED_ERROR("Unexpected error occurred"),
-    CATEGORY_NOT_FOUND("Category not found");
+    CATEGORY_NOT_FOUND("Category not found with id: %s");
 
-    private final String message;
+    private final String code;
 }
