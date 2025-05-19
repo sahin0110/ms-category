@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static az.ingress.exception.ErrorMessage.CATEGORY_ALREADY_EXISTS;
+import static az.ingress.exception.ErrorMessage.CATEGORY_NAME_ALREADY_EXISTS;
 import static az.ingress.exception.ErrorMessage.CATEGORY_NOT_FOUND;
 import static az.ingress.mapper.CategoryMapper.CATEGORY_MAPPER;
 import static az.ingress.model.enums.Status.ACTIVE;
@@ -57,7 +57,10 @@ public class CategoryServiceHandler implements CategoryService {
         var category = findCategoryGetByIdOrThrow(categoryId);
         CATEGORY_MAPPER.deleteCategory(userId, category);
         var allSubCategories = categoryRepository.findAllSubCategoriesByParent(category);
-        allSubCategories.forEach(subCategory -> subCategory.setStatus(INACTIVE));
+        allSubCategories.forEach(subCategory -> {
+            subCategory.setStatus(INACTIVE);
+            subCategory.setUserId(userId);
+        });
         categoryRepository.saveAll(allSubCategories);
         categoryRepository.save(category);
     }
@@ -69,8 +72,8 @@ public class CategoryServiceHandler implements CategoryService {
 
     private void ensureNotDuplicateCategory(String categoryName) {
         categoryRepository.findByName(categoryName)
-                .ifPresent(category -> {
-                    throw new ConflictException(CATEGORY_ALREADY_EXISTS.getCode(), category.getId());
+                .ifPresent(existingCategory -> {
+                    throw new ConflictException(CATEGORY_NAME_ALREADY_EXISTS.getCode(), categoryName);
                 });
     }
 }

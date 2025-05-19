@@ -1,7 +1,6 @@
 package az.ingress.mapper;
 
 import az.ingress.dao.entity.CategoryEntity;
-import az.ingress.model.enums.Status;
 import az.ingress.model.request.CreateParentCategory;
 import az.ingress.model.request.CreateSubCategoryRequest;
 import az.ingress.model.request.UpdateCategoryRequest;
