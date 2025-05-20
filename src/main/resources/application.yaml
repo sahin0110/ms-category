@@ -1,2 +1,12 @@
-server:
-  port: 8080
+spring:
+  application:
+    name: ms.category
+  datasource:
+    url: jdbc:postgresql://localhost:5434/postgres
+    username: postgres
+    password: postgres
+  jpa:
+    open-in-view: false
+  messages:
+    basename: messages
+    encoding: UTF-8

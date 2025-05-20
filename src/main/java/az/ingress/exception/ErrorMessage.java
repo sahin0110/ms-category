@@ -6,8 +6,10 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorMessage {
-
-    UNEXPECTED_ERROR("Unexpected error occurred");
+    CATEGORY_NAME_ALREADY_EXISTS("Category with name: %s already exists"),
+    UNEXPECTED_ERROR("Unexpected error"),
+    CATEGORY_NOT_FOUND("Category with id: %s not found"),
+    VALIDATION_ERROR("Validation error occurred");
 
     private final String message;
 }
