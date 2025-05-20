@@ -12,8 +12,8 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class CreateSubCategoryRequest {
 
-    @NotNull(message = "validation.not.null-category-id")
+    @NotNull(message = "{validation.not.null-category-id}")
     private Long parentId;
-    @NotBlank(message = "validation.not.blank-subCategory-name")
+    @NotBlank(message = "{validation.not.blank-subCategory-name}")
     private String name;
 }

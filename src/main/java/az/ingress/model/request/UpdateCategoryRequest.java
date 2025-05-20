@@ -11,6 +11,6 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class UpdateCategoryRequest {
 
-    @NotBlank(message = "validation.not.blank-category-name")
+    @NotBlank(message = "{validation.not.blank-category-name}")
     private String name;
 }

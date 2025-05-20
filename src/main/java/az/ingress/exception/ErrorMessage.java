@@ -8,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum ErrorMessage {
     CATEGORY_NAME_ALREADY_EXISTS("Category with name: %s already exists"),
     UNEXPECTED_ERROR("Unexpected error"),
-    CATEGORY_NOT_FOUND("Category with id: %s not found");
+    CATEGORY_NOT_FOUND("Category with id: %s not found"),
+    VALIDATION_ERROR("Validation error occurred");
 
-    private final String code;
+    private final String message;
 }

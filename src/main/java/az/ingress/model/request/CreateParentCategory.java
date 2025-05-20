@@ -11,6 +11,6 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class CreateParentCategory {
 
-    @NotBlank(message = "validation.not.blank-parentCategory-name")
+    @NotBlank(message = "{validation.not.blank-parentCategory-name}")
     private String name;
 }

@@ -17,7 +17,6 @@ import static az.ingress.exception.ErrorMessage.CATEGORY_NAME_ALREADY_EXISTS;
 import static az.ingress.exception.ErrorMessage.CATEGORY_NOT_FOUND;
 import static az.ingress.mapper.CategoryMapper.CATEGORY_MAPPER;
 import static az.ingress.model.enums.Status.ACTIVE;
-import static az.ingress.model.enums.Status.INACTIVE;
 
 @Service
 @RequiredArgsConstructor
@@ -27,27 +26,24 @@ public class CategoryServiceHandler implements CategoryService {
 
     @Override
     public void createCategory(Long userId, CreateParentCategory createCategory) {
-        ensureNotDuplicateCategory(createCategory.getName());
-
+        validateCategoryNameUniqueness(createCategory.getName());
         var category = CATEGORY_MAPPER.toCategoryEntity(userId, createCategory);
         categoryRepository.save(category);
     }
 
     @Override
     public List<CategoryResponse> getAllCategories() {
-        var getAllCategories = categoryRepository.findAllByStatus(ACTIVE);
-
-        return getAllCategories.stream()
+        return categoryRepository.findAllByStatus(ACTIVE)
+                .stream()
                 .map(CATEGORY_MAPPER::toCategoryResponse)
                 .toList();
     }
 
     @Override
     public void updateCategory(Long userId, UpdateCategoryRequest categoryRequest, Long categoryId) {
+        validateCategoryNameUniqueness(categoryRequest.getName());
         var category = findCategoryGetByIdOrThrow(categoryId);
-        if (categoryRequest.getName() != null) {
-            CATEGORY_MAPPER.updateCategory(userId, category, categoryRequest);
-        }
+        CATEGORY_MAPPER.updateCategory(userId, category, categoryRequest);
         categoryRepository.save(category);
     }
 
@@ -56,27 +52,25 @@ public class CategoryServiceHandler implements CategoryService {
 
         var category = findCategoryGetByIdOrThrow(categoryId);
         CATEGORY_MAPPER.deleteCategory(userId, category);
-        var allCategoriesByParentId = categoryRepository.findAllCategoriesByParentId(categoryId);
-
-        allCategoriesByParentId.forEach(subCategory -> {
-            subCategory.setStatus(INACTIVE);
-            subCategory.setUserId(userId);
-        });
-
-
-        categoryRepository.saveAll(allCategoriesByParentId);
+        deactivateSubCategories(userId, categoryId);
         categoryRepository.save(category);
     }
 
     private CategoryEntity findCategoryGetByIdOrThrow(Long categoryId) {
         return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NotFoundException(CATEGORY_NOT_FOUND.getCode(), categoryId));
+                .orElseThrow(() -> new NotFoundException(CATEGORY_NOT_FOUND.getMessage(), categoryId));
     }
 
-    private void ensureNotDuplicateCategory(String categoryName) {
+    private void validateCategoryNameUniqueness(String categoryName) {
         categoryRepository.findByName(categoryName)
                 .ifPresent(existingCategory -> {
-                    throw new ConflictException(CATEGORY_NAME_ALREADY_EXISTS.getCode(), categoryName);
+                    throw new ConflictException(CATEGORY_NAME_ALREADY_EXISTS.getMessage(), categoryName);
                 });
+    }
+
+    private void deactivateSubCategories(Long userId, Long categoryId) {
+        var subCategories = categoryRepository.findAllCategoriesByParentId(categoryId);
+        subCategories.forEach(subCategory -> CATEGORY_MAPPER.deleteCategory(userId, subCategory));
+        categoryRepository.saveAll(subCategories);
     }
 }

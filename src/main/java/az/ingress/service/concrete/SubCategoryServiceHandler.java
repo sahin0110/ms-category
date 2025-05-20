@@ -24,27 +24,33 @@ public class SubCategoryServiceHandler implements SubCategoryService {
 
     @Override
     public void createSubCategory(Long userId, CreateSubCategoryRequest request) {
-        ensureNotDuplicateCategory(request.getName());
-        var category = CATEGORY_MAPPER.toSubCategoryEntity(userId, request);
-        categoryRepository.save(category);
+        validateCategoryNameUniqueness(request.getName());
+        var subCategory = CATEGORY_MAPPER.toSubCategoryEntity(userId, request);
+        categoryRepository.save(subCategory);
     }
 
     @Override
     public List<CategoryResponse> getAllSubCategories(Long parentId) {
-        var parentCategory = categoryRepository.findById(parentId)
-                .orElseThrow(() -> new NotFoundException(CATEGORY_NOT_FOUND.getCode(), parentId));
-
-        var allCategoriesByParentIdAndStatus = categoryRepository.findAllCategoriesByParentIdAndStatus(parentId, ACTIVE);
-        return allCategoriesByParentIdAndStatus.stream()
-                .map(CATEGORY_MAPPER::toCategoryResponse)
-                .toList();
-//        var allSubCategoriesByParentAndStatus = categoryRepository.findAllSubCategoriesByParentAndStatus(parentCategory, ACTIVE);
+        validateParentCategoryExists(parentId);
+        return fetchSubCategoriesByParentId(parentId);
     }
 
-    private void ensureNotDuplicateCategory(String categoryName) {
+    private void validateCategoryNameUniqueness(String categoryName) {
         categoryRepository.findByName(categoryName)
                 .ifPresent(existingCategory -> {
-                    throw new ConflictException(CATEGORY_NAME_ALREADY_EXISTS.getCode(), categoryName);
+                    throw new ConflictException(CATEGORY_NAME_ALREADY_EXISTS.getMessage(), categoryName);
                 });
+    }
+
+    private void validateParentCategoryExists(Long parentId) {
+        categoryRepository.findById(parentId)
+                .orElseThrow(() -> new NotFoundException(CATEGORY_NOT_FOUND.getMessage(), parentId));
+    }
+
+    private List<CategoryResponse> fetchSubCategoriesByParentId(Long parentId) {
+        return categoryRepository.findAllCategoriesByParentIdAndStatus(parentId, ACTIVE)
+                .stream()
+                .map(CATEGORY_MAPPER::toCategoryResponse)
+                .toList();
     }
 }
