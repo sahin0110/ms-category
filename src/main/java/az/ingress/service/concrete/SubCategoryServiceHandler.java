@@ -31,13 +31,14 @@ public class SubCategoryServiceHandler implements SubCategoryService {
 
     @Override
     public List<CategoryResponse> getAllSubCategories(Long parentId) {
-        var category = categoryRepository.findById(parentId)
+        var parentCategory = categoryRepository.findById(parentId)
                 .orElseThrow(() -> new NotFoundException(CATEGORY_NOT_FOUND.getCode(), parentId));
 
-        var allSubCategoriesByParentAndStatus = categoryRepository.findAllSubCategoriesByParentAndStatus(category, ACTIVE);
-        return allSubCategoriesByParentAndStatus.stream()
+        var allCategoriesByParentIdAndStatus = categoryRepository.findAllCategoriesByParentIdAndStatus(parentId, ACTIVE);
+        return allCategoriesByParentIdAndStatus.stream()
                 .map(CATEGORY_MAPPER::toCategoryResponse)
                 .toList();
+//        var allSubCategoriesByParentAndStatus = categoryRepository.findAllSubCategoriesByParentAndStatus(parentCategory, ACTIVE);
     }
 
     private void ensureNotDuplicateCategory(String categoryName) {

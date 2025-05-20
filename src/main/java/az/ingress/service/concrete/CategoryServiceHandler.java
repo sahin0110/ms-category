@@ -56,12 +56,15 @@ public class CategoryServiceHandler implements CategoryService {
 
         var category = findCategoryGetByIdOrThrow(categoryId);
         CATEGORY_MAPPER.deleteCategory(userId, category);
-        var allSubCategories = categoryRepository.findAllSubCategoriesByParent(category);
-        allSubCategories.forEach(subCategory -> {
+        var allCategoriesByParentId = categoryRepository.findAllCategoriesByParentId(categoryId);
+
+        allCategoriesByParentId.forEach(subCategory -> {
             subCategory.setStatus(INACTIVE);
             subCategory.setUserId(userId);
         });
-        categoryRepository.saveAll(allSubCategories);
+
+
+        categoryRepository.saveAll(allCategoriesByParentId);
         categoryRepository.save(category);
     }
 

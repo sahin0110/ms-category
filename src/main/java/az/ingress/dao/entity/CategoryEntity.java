@@ -15,15 +15,8 @@ import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Enumerated;
 import javax.persistence.EnumType;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
-
-import static javax.persistence.CascadeType.MERGE;
-import static javax.persistence.CascadeType.PERSIST;
-import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
 
@@ -47,11 +40,7 @@ public class CategoryEntity {
 
     private String name;
 
-    @ManyToOne(fetch = LAZY)
-    private CategoryEntity parent;
-
-    @OneToMany(mappedBy = "parent", cascade = {PERSIST, MERGE})
-    private List<CategoryEntity> subCategories;
+    private Long parentId;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

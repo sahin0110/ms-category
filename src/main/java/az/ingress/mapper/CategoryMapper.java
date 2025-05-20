@@ -14,7 +14,7 @@ public enum CategoryMapper {
 
     public CategoryEntity toSubCategoryEntity(Long userId, CreateSubCategoryRequest request) {
         return CategoryEntity.builder()
-                .parent(getParent(request))
+                .parentId(request.getParentId())
                 .name(request.getName())
                 .status(ACTIVE)
                 .userId(userId)
@@ -33,7 +33,7 @@ public enum CategoryMapper {
         return CategoryResponse.builder()
                 .id(categoryEntity.getId())
                 .name(categoryEntity.getName())
-                .parentId(categoryEntity.getParent() != null ? categoryEntity.getParent().getId() : null)
+                .parentId(categoryEntity.getParentId() != null ? categoryEntity.getParentId() : null)
                 .build();
     }
 
@@ -45,9 +45,5 @@ public enum CategoryMapper {
     public void deleteCategory(Long userId, CategoryEntity category) {
         category.setStatus(INACTIVE);
         category.setUserId(userId);
-    }
-
-    private static CategoryEntity getParent(CreateSubCategoryRequest request) {
-        return CategoryEntity.builder().id(request.getParentId()).build();
     }
 }

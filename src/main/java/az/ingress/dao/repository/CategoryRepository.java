@@ -10,9 +10,9 @@ import java.util.Optional;
 public interface CategoryRepository extends CrudRepository<CategoryEntity, Long> {
     List<CategoryEntity> findAllByStatus(Status status);
 
-    List<CategoryEntity> findAllSubCategoriesByParentAndStatus(CategoryEntity parent, Status status);
-
     Optional<CategoryEntity> findByName(String categoryName);
 
-    List<CategoryEntity> findAllSubCategoriesByParent(CategoryEntity parent);
+    List<CategoryEntity> findAllCategoriesByParentIdAndStatus(Long parentId, Status status);
+
+    List<CategoryEntity> findAllCategoriesByParentId(Long parentId);
 }
